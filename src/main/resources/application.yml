@@ -7,7 +7,6 @@ spring:
                 driver-class-name: com.mysql.jdbc.Driver
         jpa:
               show-sql: true
-              database: mysql
 
 #tomcat
 server:
@@ -17,9 +16,14 @@ server:
 mybatis:
   mapper-locations: classpath:mapper/*Mapper.xml
   type-aliases-package: com.test.demo.po
+
+#打印执行的SQL
 logging:
   level:
-    com.test.demo.mapper:debug
+    com.test.demo.mapper: trace
+
+
+
 
 
 

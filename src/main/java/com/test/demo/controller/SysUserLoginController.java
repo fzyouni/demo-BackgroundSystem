@@ -26,13 +26,13 @@ public class SysUserLoginController {
 
 
     @RequestMapping(value = "/userLogin", method = RequestMethod.POST)
-    public ResponseModel<String> sysLogin(SysUserInfo userInfo) {
-        ResponseModel<String> result;
+    public ResponseModel<SysUserInfo> sysLogin(SysUserInfo userInfo) {
+        ResponseModel<SysUserInfo> result;
         Subject subject = SecurityUtils.getSubject();
         UsernamePasswordToken token = new UsernamePasswordToken(userInfo.getUserName(), userInfo.getUserPassword());
         try {
             subject.login(token);
-            result = new ResponseModel<>("success", "登陆成功！");
+            result = new ResponseModel<>("success", "登陆成功！",userInfo);
         } catch (IncorrectCredentialsException e) {
             result = new ResponseModel<>("error", "密码错误！");
         } catch (LockedAccountException e) {

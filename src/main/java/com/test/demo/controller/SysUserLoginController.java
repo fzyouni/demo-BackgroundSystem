@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class SysUserLoginController {
 
 
-    @RequestMapping(value = "/login", method = RequestMethod.GET)
+    @RequestMapping(value = "/userLogin", method = RequestMethod.POST)
     public ResponseModel<String> sysLogin(SysUserInfo userInfo) {
         ResponseModel<String> result;
         Subject subject = SecurityUtils.getSubject();

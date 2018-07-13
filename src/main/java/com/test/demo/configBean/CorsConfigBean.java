@@ -6,7 +6,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 
 /**
- * 解决前端跨域问题
+ * 解决前端请求跨域问题
  *
  * @author Ben
  * @create 2018-07-13 17:05

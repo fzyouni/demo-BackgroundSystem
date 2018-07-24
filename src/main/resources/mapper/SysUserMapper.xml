@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.test.demo.mapper.SysUserMapper">
+    <!-- 用户基本信息-->
+    <resultMap id="user" type="com.test.demo.po.SysUserInfo">
+        <id column="tid" property="userId"/>
+        <result column="user_name" property="userName"/>
+        <result column="user_password" property="userPassword"/>
+        <result column="user_email" property="userEmail"/>
+        <result column="user_addr" property="userAddr"/>
+    </resultMap>
     <!--用户信息-->
     <resultMap id="userInfo" type="com.test.demo.po.vo.SysUserInfoVo">
         <id column="tid" property="userId"/>
@@ -30,5 +38,9 @@
               p.tid as per_id,p.permission,p.role_id as per_role_id
       FROM sys_user_info t LEFT JOIN sys_user_role r ON t.TID = r.USER_ID
       left join sys_user_permission p on r.ROLE_ID = p.ROLE_ID where t.USER_NAME=#{name}
+    </select>
+    <select id="getUserInfoList" resultMap="user">
+         SELECT t.TID,t.USER_NAME,t.USER_PASSWORD,t.USER_ADDR,t.USER_EMAIL
+      FROM sys_user_info t
     </select>
 </mapper>

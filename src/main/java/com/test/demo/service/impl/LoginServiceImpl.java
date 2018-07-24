@@ -2,10 +2,13 @@ package com.test.demo.service.impl;
 
 
 import com.test.demo.mapper.SysUserMapper;
+import com.test.demo.po.SysUserInfo;
 import com.test.demo.service.ILoginService;
 import com.test.demo.po.vo.SysUserInfoVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * 用户登录业务实现类
@@ -20,7 +23,7 @@ public class LoginServiceImpl implements ILoginService {
     private SysUserMapper sysUserMapper;
 
     @Override
-    public SysUserInfoVo getUserInfoByName(String name){
+    public SysUserInfoVo getUserInfoByName(String name) {
         SysUserInfoVo userInfo = null;
         try {
             userInfo = sysUserMapper.getUserInfoByName(name);
@@ -28,5 +31,16 @@ public class LoginServiceImpl implements ILoginService {
             e.printStackTrace();
         }
         return userInfo;
+    }
+
+    @Override
+    public List<SysUserInfo> getUserInfoList() {
+        List<SysUserInfo> result = null;
+        try {
+            result = sysUserMapper.getUserInfoList();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return result;
     }
 }

@@ -1,7 +1,10 @@
 package com.test.demo.service;
 
 
+import com.test.demo.po.SysUserInfo;
 import com.test.demo.po.vo.SysUserInfoVo;
+
+import java.util.List;
 
 /**
  * 权限用户登录接口
@@ -17,4 +20,10 @@ public interface ILoginService {
      * @return
      */
     SysUserInfoVo getUserInfoByName(String name);
+
+    /**
+     * 获取全部的用户信息列表
+     * @return
+     */
+    List<SysUserInfo> getUserInfoList();
 }

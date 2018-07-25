@@ -5,6 +5,7 @@ import com.test.demo.po.SysUserInfo;
 import com.test.demo.po.vo.SysUserInfoVo;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 权限用户登录接口
@@ -25,5 +26,5 @@ public interface ILoginService {
      * 获取全部的用户信息列表
      * @return
      */
-    List<SysUserInfo> getUserInfoList();
+    List<SysUserInfo> getUserInfoList(Map<String,Object> params);
 }

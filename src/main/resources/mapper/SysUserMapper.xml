@@ -39,8 +39,17 @@
       FROM sys_user_info t LEFT JOIN sys_user_role r ON t.TID = r.USER_ID
       left join sys_user_permission p on r.ROLE_ID = p.ROLE_ID where t.USER_NAME=#{name}
     </select>
-    <select id="getUserInfoList" resultMap="user">
-         SELECT t.TID,t.USER_NAME,t.USER_PASSWORD,t.USER_ADDR,t.USER_EMAIL
-      FROM sys_user_info t
+    <select id="getUserInfoList" parameterType="Map" resultMap="user">
+        SELECT t.TID,t.USER_NAME,t.USER_PASSWORD,t.USER_ADDR,t.USER_EMAIL
+        FROM sys_user_info t
+        <where>
+            1=1
+            <if test="name !=null and name !='' ">
+                and t.USER_NAME like '%${name}%'
+            </if>
+            <if test="addr !=null and addr !='' ">
+                and t.USER_ADDR =#{addr}
+            </if>
+        </where>
     </select>
 </mapper>

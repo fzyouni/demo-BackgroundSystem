@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 用户登录业务实现类
@@ -34,10 +35,10 @@ public class LoginServiceImpl implements ILoginService {
     }
 
     @Override
-    public List<SysUserInfo> getUserInfoList() {
+    public List<SysUserInfo> getUserInfoList(Map<String,Object> params) {
         List<SysUserInfo> result = null;
         try {
-            result = sysUserMapper.getUserInfoList();
+            result = sysUserMapper.getUserInfoList(params);
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -4,6 +4,7 @@ import com.test.demo.po.SysUserInfo;
 import com.test.demo.po.vo.SysUserInfoVo;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 用户权限信息
@@ -19,5 +20,5 @@ public interface SysUserMapper {
      * 获取用户信息列表
      * @return
      */
-    List<SysUserInfo> getUserInfoList();
+    List<SysUserInfo> getUserInfoList(Map<String,Object> params);
 }

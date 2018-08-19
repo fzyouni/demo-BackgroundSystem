@@ -1,6 +1,7 @@
 package com.test.demo.configBean;
 
 import com.baomidou.mybatisplus.extension.plugins.PaginationInterceptor;
+import org.mybatis.spring.annotation.MapperScan;
 import org.mybatis.spring.mapper.MapperScannerConfigurer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,6 +13,7 @@ import org.springframework.context.annotation.Configuration;
  * @create 2018-07-27 14:42
  **/
 @Configuration
+@MapperScan("com.test.demo.mapper")
 public class MybatisPlusConfigBean {
     /*
      * 分页插件，自动识别数据库类型

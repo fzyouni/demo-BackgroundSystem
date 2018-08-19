@@ -1,5 +1,6 @@
 package com.test.demo.controller;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.test.demo.common.msg.ResponseModel;
 import com.test.demo.po.Student;
 import com.test.demo.service.IStudentService;
@@ -22,10 +23,10 @@ public class StudentLoginController {
     private IStudentService studentService;
 
     @RequestMapping("/getStudentList")
-    public ResponseModel<List<Student>> getStudentList() {
-        ResponseModel<List<Student>> result = null;
+    public ResponseModel<Page<Student>> getStudentList() {
+        ResponseModel<Page<Student>> result = null;
         try {
-            List<Student> stuList = studentService.getStudentList();
+            Page<Student> stuList = studentService.getStudentList(new Page<>(1, 10));
             result = new ResponseModel<>("success", "查询成功！", stuList);
         } catch (Exception e) {
             e.printStackTrace();

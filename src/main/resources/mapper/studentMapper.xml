@@ -12,12 +12,12 @@
         <result column="create_time" property="createTime"/>
     </resultMap>
 
-    <insert id="insertStudentInfo" useGeneratedKeys="true" keyProperty="tid"  parameterType="com.test.demo.po.Student">
+    <insert id="insertStudentInfo" useGeneratedKeys="true" keyProperty="tid" parameterType="com.test.demo.po.Student">
           insert into student(stu_name,stu_addr,stu_phone,stu_state,stu_password)
           values(#{stuName},#{stuAddr},#{stuPhone},#{stuState},#{stuPassword})
     </insert>
 
-    <update id="updateStudentInfo"  parameterType="com.test.demo.po.Student">
+    <update id="updateStudentInfo" parameterType="com.test.demo.po.Student">
         update student set stu_name=#{stuName} ,stu_addr=#{stuAddr},stu_phone=#{stuPhone}
         ,stu_state=#{stuState},stu_password=#{stuPassword} where tid =#{tid}
     </update>
@@ -27,7 +27,7 @@
     </delete>
 
     <select id="findStudentInfos" resultMap="studentDto">
-        select * from student;
+        select * from student
     </select>
 
     <select id="findStudentInfo" resultMap="studentDto" parameterType="java.lang.String">

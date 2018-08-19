@@ -1,6 +1,9 @@
 package com.test.demo.mapper;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.test.demo.po.Student;
+
 
 import java.sql.SQLException;
 import java.util.List;
@@ -8,7 +11,7 @@ import java.util.List;
 /**
  * 学生信息dto 接口
  */
-public interface StudentMapper {
+public interface StudentMapper extends BaseMapper<Student> {
     /**
      * 新增学生信息
      *
@@ -35,8 +38,10 @@ public interface StudentMapper {
      * 查询全部的学生信息
      *
      * @return
+     * @param
+     * @param page
      */
-    List<Student> findStudentInfos() throws SQLException;
+    List<Student> findStudentInfos(Page<Student> page) throws SQLException;
 
     /**
      * 根据主键查询出对应的学生信息

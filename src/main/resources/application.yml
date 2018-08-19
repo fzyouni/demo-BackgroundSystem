@@ -7,6 +7,8 @@ spring:
                 driver-class-name: com.mysql.jdbc.Driver
         jpa:
               show-sql: true
+        thymeleaf:
+                  cache: false  #前后端分离，关闭前端模板引擎，官方建议
 
 #tomcat
 server:

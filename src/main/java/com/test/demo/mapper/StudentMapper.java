@@ -1,8 +1,10 @@
 package com.test.demo.mapper;
 
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.test.demo.po.Student;
+import org.apache.ibatis.annotations.Param;
 
 
 import java.sql.SQLException;
@@ -37,19 +39,18 @@ public interface StudentMapper extends BaseMapper<Student> {
     /**
      * 查询全部的学生信息
      *
-     * @return
      * @param
      * @param page
+     * @return
      */
     List<Student> findStudentInfos(Page<Student> page) throws SQLException;
 
     /**
      * 根据主键查询出对应的学生信息
      *
-     * @param tid
      * @return
      */
-    Student findStudentInfo(String tid) throws SQLException;
+    Student findStudentInfo(@Param("ew") Wrapper<Student> entityWrapper) throws SQLException;
 
 
 }

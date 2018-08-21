@@ -30,7 +30,10 @@
         select * from student
     </select>
 
-    <select id="findStudentInfo" resultMap="studentDto" parameterType="java.lang.String">
-        select * from student where tid =#{tid}
+    <select id="findStudentInfo" resultMap="studentDto">
+        select * from student
+        <where>
+            ${ew.sqlSegment}
+        </where>
     </select>
 </mapper>

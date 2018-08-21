@@ -1,6 +1,7 @@
 package com.test.demo.service.impl;
 
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
@@ -32,4 +33,17 @@ public class StudentServiceImpl extends ServiceImpl<StudentMapper, Student> impl
         }
         return page;
     }
+
+    @Override
+    public Student findStudentInfo(String tid) {
+        Student stu = null;
+        try {
+            stu = studentMapper.findStudentInfo(new QueryWrapper<Student>().eq("tid", tid));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return stu;
+    }
+
+
 }

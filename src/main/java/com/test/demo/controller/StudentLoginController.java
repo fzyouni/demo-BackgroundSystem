@@ -17,7 +17,7 @@ import java.util.List;
  * @create 2018-06-08 13:30
  **/
 @RestController
-@RequestMapping("/login")
+@RequestMapping("/stu")
 public class StudentLoginController {
 
     @Autowired
@@ -36,6 +36,7 @@ public class StudentLoginController {
         return result;
     }
 
+    @RequestMapping("/getStudentListByCondition")
     public ResponseModel<Student> getStudentListByCondition(String tid) {
         ResponseModel<Student> result;
         try {

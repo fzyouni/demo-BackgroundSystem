@@ -18,7 +18,7 @@ import java.util.Map;
  * @create 2018-07-05 10:55
  **/
 @Service
-public class LoginServiceImpl implements ILoginService {
+public class  LoginServiceImpl implements ILoginService {
 
     @Autowired
     private SysUserMapper sysUserMapper;

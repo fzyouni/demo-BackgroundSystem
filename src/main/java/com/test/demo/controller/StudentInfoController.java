@@ -18,7 +18,7 @@ import java.util.List;
  **/
 @RestController
 @RequestMapping("/stu")
-public class StudentLoginController {
+public class StudentInfoController {
 
     @Autowired
     private IStudentService studentService;

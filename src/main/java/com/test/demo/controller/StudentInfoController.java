@@ -1,6 +1,5 @@
 package com.test.demo.controller;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.test.demo.common.msg.ResponseModel;
 import com.test.demo.po.Student;
@@ -8,9 +7,6 @@ import com.test.demo.service.IStudentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import javax.annotation.Resource;
-import java.util.List;
 
 /**
  * @author Ben
@@ -35,6 +31,8 @@ public class StudentInfoController {
         }
         return result;
     }
+
+
 
     @RequestMapping("/getStudentListByCondition")
     public ResponseModel<Student> getStudentListByCondition(String tid) {

@@ -6,9 +6,24 @@ spring:
                 password: root
                 driver-class-name: com.mysql.jdbc.Driver
         jpa:
-              show-sql: true
+                show-sql: true
         thymeleaf:
-                  cache: false  #前后端分离，关闭前端模板引擎，官方建议
+                cache: false  #前后端分离，关闭前端模板引擎，官方建议
+        redis:
+                database: 0
+                host: 127.0.0.1
+                port: 6379
+                password:
+                jedis:
+                      pool:
+                          max-active: 8
+                          max-wait: -1ms
+                          max-idle: 8
+                timeout: 20ms
+
+
+
+
 
 #tomcat
 server:
@@ -21,15 +36,15 @@ server:
 
 #mybatis-plus
 mybatis-plus:
-  mapper-locations: classpath:mapper/*Mapper.xml
-  typeAliasesPackage: com.test.demo.po
-  global-config:
-      db-config:
-        #主键类型  0:"数据库ID自增", 1:"用户输入ID",2:"全局唯一ID (数字类型唯一ID)", 3:"全局唯一ID UUID";
-        id-type: id_worker
-        #字段策略 0:"忽略判断",1:"非 NULL 判断"),2:"非空判断"
-        field-strategy: not_empty
-      refresh: true
+        mapper-locations: classpath:mapper/*Mapper.xml
+        typeAliasesPackage: com.test.demo.po
+        global-config:
+                    db-config:
+                          #主键类型  0:"数据库ID自增", 1:"用户输入ID",2:"全局唯一ID (数字类型唯一ID)", 3:"全局唯一ID UUID";
+                          id-type: id_worker
+                          #字段策略 0:"忽略判断",1:"非 NULL 判断"),2:"非空判断"
+                          field-strategy: not_empty
+            refresh: true
 #打印执行的SQL
 logging:
   level:

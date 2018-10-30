@@ -1,6 +1,8 @@
 package com.test.demo.po;
 
 
+import com.test.demo.common.annotation.ExportAnnotation;
+
 import java.io.Serializable;
 import java.util.Date;
 
@@ -15,10 +17,13 @@ public class Student implements Serializable {
     //主键
     private String tid;
     //姓名
+    @ExportAnnotation(order = 1, fieldName = "学生姓名")
     private String stuName;
     //地址
+    @ExportAnnotation(order = 3, fieldName = "地址")
     private String stuAddr;
     //电话
+    @ExportAnnotation(order = 2, fieldName = "电话")
     private String stuPhone;
     //状态（0：未删除 1：已删除）
     private String stuState;

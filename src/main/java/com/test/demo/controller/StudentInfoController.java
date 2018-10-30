@@ -21,9 +21,9 @@ public class StudentInfoController {
 
     @RequestMapping("/getStudentList")
     public ResponseModel<Page<Student>> getStudentList() {
-        ResponseModel<Page<Student>> result = null;
+        ResponseModel<Page<Student>> result;
         try {
-            Page<Student> stuList = studentService.getStudentList(new Page<Student>(1, 10));
+            Page<Student> stuList = studentService.getStudentList(new Page<>(1, 10));
             result = new ResponseModel<>("success", "查询成功！", stuList);
         } catch (Exception e) {
             e.printStackTrace();

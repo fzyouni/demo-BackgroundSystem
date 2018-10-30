@@ -1,6 +1,5 @@
 package com.test.demo.controller;
 
-import com.test.demo.common.msg.ResponseModel;
 import com.test.demo.common.vo.ComBoxData;
 import com.test.demo.service.ICommonBoxService;
 import org.springframework.beans.factory.annotation.Autowired;

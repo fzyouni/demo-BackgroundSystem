@@ -147,7 +147,7 @@ public final class ExcelUtils {
                     continue;
                 }
                 if (row.getLastCellNum() > filedList.size()) {
-                    throw new RuntimeException("excel文件中第" + (i + 1) + "行数据列数大于要" + clazz.getName() + "的字段总数！");
+                    throw new RuntimeException("excel文件中第" + (i + 1) + "行数据列数大于要" + clazz.getName() + "ReadExcelAnnotation注解字段总数！");
                 }
                 for (int j = 0; j < row.getLastCellNum(); j++) {
                     Cell cell = row.getCell(j);
@@ -170,7 +170,7 @@ public final class ExcelUtils {
                             filedList.get(j).set(po, cell.getBooleanCellValue());
                             break;
                         case FORMULA:
-                            filedList.get(j).set(po, cell.getCellFormula());
+                            filedList.get(j).set(po, cell.getCellFormula().trim());
                             break;
                         case NUMERIC:
                             if (DateUtil.isCellDateFormatted(cell)) {

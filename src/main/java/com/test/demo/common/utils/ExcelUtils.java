@@ -2,22 +2,28 @@ package com.test.demo.common.utils;
 
 import com.google.common.collect.Lists;
 import com.test.demo.common.annotation.ExportAnnotation;
+import com.test.demo.common.annotation.ReadExcelAnnotation;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.ss.formula.functions.T;
-import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.HorizontalAlignment;
-import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.ServletOutputStream;
+import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.InputStream;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
-import static com.sun.xml.internal.xsom.impl.UName.comparator;
 
 /**
  * excel表格工具类
@@ -50,23 +56,24 @@ public final class ExcelUtils {
             e.printStackTrace();
             System.out.println("导出查询后台异常！");
         }
-        list2Excel(list,clazz,fileName,request,response);
+        list2Excel(list, clazz, fileName, request, response);
     }
 
     /**
      * 把list结果集导出到excel
+     *
      * @param list
      * @param clazz
      * @param fileName
      * @param request
      * @param response
      */
-    public static void list2Excel(List<?> list, Class<?> clazz, String fileName, HttpServletRequest request, HttpServletResponse response){
-        List<Field> fieldList = getOrderFiledList(clazz);
-        HSSFWorkbook wb=null;
+    public static void list2Excel(List<?> list, Class<?> clazz, String fileName, HttpServletRequest request, HttpServletResponse response) {
+        List<Field> fieldList = getOrderFiledList(clazz, ExportAnnotation.class);
+        HSSFWorkbook wb = null;
         try {
             //声明工作簿
-            wb= new HSSFWorkbook();
+            wb = new HSSFWorkbook();
             //创建表格
             HSSFSheet sheet = wb.createSheet("Sheet1");
             if (!list.isEmpty()) {//结果集不为空
@@ -78,13 +85,13 @@ public final class ExcelUtils {
                 font.setBold(true);
                 //生成标题行
                 HSSFRow titleRow = sheet.createRow(0);
-                for(int i=0;i<fieldList.size();i++){
+                for (int i = 0; i < fieldList.size(); i++) {
                     titleRow.createCell(i).setCellValue(fieldList.get(i).getAnnotation(ExportAnnotation.class).fieldName());
                 }
                 //写入数据
-                for(int i=0;i<list.size();i++){
-                    HSSFRow DataRow = sheet.createRow(i+1);//创建行
-                    for (int j=0;j<fieldList.size();j++){
+                for (int i = 0; i < list.size(); i++) {
+                    HSSFRow DataRow = sheet.createRow(i + 1);//创建行
+                    for (int j = 0; j < fieldList.size(); j++) {
                         DataRow.createCell(j).setCellValue(String.valueOf(fieldList.get(j).get(list.get(i))));
                     }
                 }
@@ -95,42 +102,135 @@ public final class ExcelUtils {
         }
         try {
             response.setCharacterEncoding("UTF-8");//设置相应内容的编码格式
-            fileName = java.net.URLEncoder.encode(fileName,"UTF-8");
-            response.setHeader("Content-Disposition","attachment;filename="+new String(fileName.getBytes("UTF-8"),"GBK")+".xls");
+            fileName = java.net.URLEncoder.encode(fileName, "UTF-8");
+            response.setHeader("Content-Disposition", "attachment;filename=" + new String(fileName.getBytes("UTF-8"), "GBK") + ".xls");
             response.setContentType("application/msexcel");//定义输出类型
-            ServletOutputStream outputStream =  response.getOutputStream();
+            ServletOutputStream outputStream = response.getOutputStream();
             outputStream.flush();
-            if(wb!=null){
+            if (wb != null) {
                 wb.write(outputStream);
             }
-        }catch (Exception e){
+        } catch (Exception e) {
 
         }
+    }
+
+    /**
+     * 读取excel 内容转成对应的list
+     *
+     * @param file
+     * @param rowIndex
+     * @param clazz
+     * @return
+     */
+    public static List<?> readExcel(MultipartFile file, Integer rowIndex, Class<?> clazz) {
+        try {
+            InputStream inputStream = file.getInputStream();
+            if (inputStream.available() == 0) {
+                throw new RuntimeException("传入的文件流为空！");
+            }
+            HSSFWorkbook wb = new HSSFWorkbook(inputStream);
+            Sheet sheet = wb.getSheetAt(0);
+            int rowNum = sheet.getLastRowNum();//获取最大行数
+            if (rowIndex <= 0) {//如果读取起始行数小于0 则重置为1
+                rowIndex = 1;
+            }
+            if (rowNum - rowIndex < 0) {
+                throw new RuntimeException("读取的起始行数大于文件的最大行数！");
+            }
+            List<Field> filedList = getOrderFiledList(clazz, ReadExcelAnnotation.class);
+            List<Object> result = new ArrayList();
+            for (int i = (rowIndex - 1); i < rowNum; i++) {
+                Object po = clazz.newInstance();
+                Row row = sheet.getRow(i);
+                if (row == null) {
+                    continue;
+                }
+                if (row.getLastCellNum() > filedList.size()) {
+                    throw new RuntimeException("excel文件中第" + (i + 1) + "行数据列数大于要" + clazz.getName() + "的字段总数！");
+                }
+                for (int j = 0; j < row.getLastCellNum(); j++) {
+                    Cell cell = row.getCell(j);
+                    if (cell == null) {
+                        continue;
+                    }
+                    filedList.get(j).setAccessible(true);
+                    switch (cell.getCellType()) {
+                        case _NONE:
+                            throw new RuntimeException("excel文件中第" + (i + 1) + "行，第" + (j + 1) + "列单元格出现未知数据类型！");
+                        case BLANK:
+                            filedList.get(j).set(po, null);
+                            break;
+                        case ERROR:
+                            throw new RuntimeException("excel文件中第" + (i + 1) + "行，第" + (j + 1) + "列单元格出现错误单元格类型！");
+                        case STRING:
+                            filedList.get(j).set(po, cell.getStringCellValue().trim());
+                            break;
+                        case BOOLEAN:
+                            filedList.get(j).set(po, cell.getBooleanCellValue());
+                            break;
+                        case FORMULA:
+                            filedList.get(j).set(po, cell.getCellFormula());
+                            break;
+                        case NUMERIC:
+                            if (DateUtil.isCellDateFormatted(cell)) {
+                                filedList.get(j).set(po, new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(cell.getDateCellValue()));
+                            } else {
+                                filedList.get(j).set(po, cell.getNumericCellValue());
+                            }
+                            break;
+                        default:
+                            break;
+                    }
+                }
+                result.add(po);
+            }
+            return result;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     /**
      * 根据给的class 获取到bean上面的ExportAnnotation注解 并且根据order升序输出
      *
      * @param clazz
+     * @param annotationClass
      * @return
      */
-    private static List<Field> getOrderFiledList(Class<?> clazz) {
+    private static List<Field> getOrderFiledList(Class<?> clazz, Class<? extends Annotation> annotationClass) {
         if (clazz == null) {
             throw new RuntimeException("实体类不可为空！");
         }
         Field[] fields = clazz.getDeclaredFields();
         Map<Integer, Field> fieldsMap = new HashMap<>();
-        for (Field field : fields) {
-            //判断字段上知否存在ExportAnnotation注解
-            if (field.isAnnotationPresent(ExportAnnotation.class)) {
-                //获取字段中包含ExportAnnotation的注解
-                ExportAnnotation exportAnnotation = field.getAnnotation(ExportAnnotation.class);
-                Integer excelCol = exportAnnotation.order();
-                field.setAccessible(true);
-                if (fieldsMap.containsKey(excelCol)) {
-                    throw new RuntimeException(clazz.getName() + "里面的" + field.getName() + "上面的ExportAnnotation注解order存在重复");
+        if (ExportAnnotation.class.hashCode() == annotationClass.hashCode()) {//导出field
+            for (Field field : fields) {
+                //判断字段上知否存在ExportAnnotation注解
+                if (field.isAnnotationPresent(ExportAnnotation.class)) {
+                    //获取字段中包含ExportAnnotation的注解
+                    ExportAnnotation exportAnnotation = field.getAnnotation(ExportAnnotation.class);
+                    Integer excelCol = exportAnnotation.order();
+                    field.setAccessible(true);
+                    if (fieldsMap.containsKey(excelCol)) {
+                        throw new RuntimeException(clazz.getName() + "里面的" + field.getName() + "上面的ExportAnnotation注解order存在重复");
+                    }
+                    fieldsMap.put(excelCol, field);
                 }
-                fieldsMap.put(excelCol, field);
+            }
+        }
+        if (ReadExcelAnnotation.class.hashCode() == annotationClass.hashCode()) {//读取field
+            for (Field field : fields) {
+                if (field.isAnnotationPresent(ReadExcelAnnotation.class)) {
+                    ReadExcelAnnotation readExcelAnnotation = field.getAnnotation(ReadExcelAnnotation.class);
+                    Integer excelCol = readExcelAnnotation.order();
+                    field.setAccessible(true);
+                    if (fieldsMap.containsKey(excelCol)) {
+                        throw new RuntimeException(clazz.getName() + "里面的" + field.getName() + "上面的ReadExcelAnnotation注解order存在重复");
+                    }
+                    fieldsMap.put(excelCol, field);
+                }
             }
         }
         //根据order 排序之后的filed集合

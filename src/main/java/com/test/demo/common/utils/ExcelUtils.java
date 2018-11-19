@@ -8,6 +8,7 @@ import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.ss.formula.functions.T;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.util.StringUtil;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -125,13 +126,24 @@ public final class ExcelUtils {
      */
     public static List<?> readExcel(MultipartFile file, Integer rowIndex, Class<?> clazz) {
         try {
-            InputStream inputStream = file.getInputStream();
-            if (inputStream.available() == 0) {
+            if (file == null || file.isEmpty()) {
                 throw new RuntimeException("传入的文件流为空！");
             }
-            HSSFWorkbook wb = new HSSFWorkbook(inputStream);
+            String fileName = file.getOriginalFilename();
+            String suffix = fileName.substring(fileName.lastIndexOf(".") + 1);
+            InputStream inputStream = file.getInputStream();
+            Workbook wb = null;
+            if (StringUtils.equals("xls", suffix)) {
+                wb = new HSSFWorkbook(inputStream);
+            }
+            if (StringUtils.equals("xlsx", suffix)) {
+                wb = new XSSFWorkbook(inputStream);
+            }
+            if (wb == null) {
+                throw new RuntimeException("文件流转换excel失败！");
+            }
             Sheet sheet = wb.getSheetAt(0);
-            int rowNum = sheet.getLastRowNum();//获取最大行数
+            int rowNum = sheet.getLastRowNum();//获取最大行数(返回值为excel里面的行数-1)
             if (rowIndex <= 0) {//如果读取起始行数小于0 则重置为1
                 rowIndex = 1;
             }
@@ -140,7 +152,7 @@ public final class ExcelUtils {
             }
             List<Field> filedList = getOrderFiledList(clazz, ReadExcelAnnotation.class);
             List<Object> result = new ArrayList();
-            for (int i = (rowIndex - 1); i < rowNum; i++) {
+            for (int i = (rowIndex - 1); i <= rowNum; i++) {
                 Object po = clazz.newInstance();
                 Row row = sheet.getRow(i);
                 if (row == null) {
@@ -176,7 +188,14 @@ public final class ExcelUtils {
                             if (DateUtil.isCellDateFormatted(cell)) {
                                 filedList.get(j).set(po, new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(cell.getDateCellValue()));
                             } else {
-                                filedList.get(j).set(po, cell.getNumericCellValue());
+                                String type = filedList.get(j).getType().getName();
+                                if (StringUtils.equals(type, "java.lang.String")) {
+                                    cell.setCellType(CellType.STRING);
+                                    filedList.get(j).set(po, cell.getStringCellValue());
+                                } else {//这里暂时没有考虑excel中数字长度过长时，转为科学计数法的问题
+                                    filedList.get(j).set(po, cell.getNumericCellValue());
+                                }
+
                             }
                             break;
                         default:

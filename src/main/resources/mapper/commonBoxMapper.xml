@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.test.demo.mapper.CommonBoxMapper">
-    
+
     <resultMap id="comBoxData" type="com.test.demo.common.vo.ComBoxData">
         <result column="area_name" property="label"></result>
         <result column="code" property="value"></result>
     </resultMap>
-    <select id="getDistrictInfosByArea" parameterType="String" resultMap="comBoxData">
+    <select id="getDistrictInfosByArea" parameterType="java.lang.String" resultMap="comBoxData">
         SELECT temp.area_name,temp.code
         FROM (SELECT r.* from  sys_code_district r where r.area_name=#{areaName} UNION ALL
         SELECT d.* from sys_code_district d LEFT JOIN sys_code_district r on d.parent_id=r.id where r.area_name=#{areaName})temp

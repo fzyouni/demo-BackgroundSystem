@@ -1,6 +1,7 @@
 package com.test.demo.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.test.demo.common.enums.CodeType;
 import com.test.demo.common.msg.ResponseModel;
 import com.test.demo.po.Student;
 import com.test.demo.service.IStudentService;
@@ -24,14 +25,13 @@ public class StudentInfoController {
         ResponseModel<Page<Student>> result;
         try {
             Page<Student> stuList = studentService.getStudentList(new Page<>(1, 10));
-            result = new ResponseModel<>("success", "查询成功！", stuList);
+            result = new ResponseModel<>(CodeType.SUCCESS, "查询成功！", stuList);
         } catch (Exception e) {
             e.printStackTrace();
-            result = new ResponseModel<>("error", "查询异常！");
+            result = new ResponseModel<>(CodeType.ERROR, "查询异常！");
         }
         return result;
     }
-
 
 
     @RequestMapping("/getStudentListByCondition")
@@ -39,10 +39,10 @@ public class StudentInfoController {
         ResponseModel<Student> result;
         try {
             Student stu = studentService.findStudentInfo(tid);
-            result = new ResponseModel<>("success", "", stu);
+            result = new ResponseModel<>(CodeType.SUCCESS, "", stu);
         } catch (Exception e) {
             e.printStackTrace();
-            result = new ResponseModel<>("error", "");
+            result = new ResponseModel<>(CodeType.ERROR, "");
         }
         return result;
     }

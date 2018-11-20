@@ -2,6 +2,7 @@ package com.test.demo.controller;
 
 
 import com.google.common.collect.Maps;
+import com.test.demo.common.enums.CodeType;
 import com.test.demo.common.msg.ResponseModel;
 import com.test.demo.po.SysUserInfo;
 import com.test.demo.service.ILoginService;
@@ -39,10 +40,10 @@ public class SysUserInfoController {
         ResponseModel<List<SysUserInfo>> result = null;
         try {
             List<SysUserInfo> res = loginService.getUserInfoList(params);
-            result = new ResponseModel<>("success", "", res);
+            result = new ResponseModel<>(CodeType.SUCCESS, "", res);
         } catch (Exception e) {
             e.printStackTrace();
-            result = new ResponseModel<>("error", "数据加载异常！");
+            result = new ResponseModel<>(CodeType.ERROR, "数据加载异常！");
         }
         return result;
     }

@@ -1,6 +1,7 @@
 package com.test.demo.controller;
 
 
+import com.test.demo.common.enums.CodeType;
 import com.test.demo.common.msg.ResponseModel;
 import com.test.demo.po.SysUserInfo;
 import org.apache.shiro.SecurityUtils;
@@ -32,15 +33,15 @@ public class SysUserLoginController {
         UsernamePasswordToken token = new UsernamePasswordToken(userInfo.getUserName(), userInfo.getUserPassword());
         try {
             subject.login(token);
-            result = new ResponseModel<>("success", "登陆成功！",userInfo);
+            result = new ResponseModel<>(CodeType.SUCCESS, "登陆成功！", userInfo);
         } catch (IncorrectCredentialsException e) {
-            result = new ResponseModel<>("error", "密码错误！");
+            result = new ResponseModel<>(CodeType.ERROR, "密码错误！");
         } catch (LockedAccountException e) {
-            result = new ResponseModel<>("error", "该账户已被冻结！");
+            result = new ResponseModel<>(CodeType.ERROR, "该账户已被冻结！");
         } catch (AuthenticationException e) {
-            result = new ResponseModel<>("error", "该账户不存在！");
+            result = new ResponseModel<>(CodeType.ERROR, "该账户不存在！");
         } catch (Exception e) {
-            result = new ResponseModel<>("error", "登陆异常！");
+            result = new ResponseModel<>(CodeType.ERROR, "登陆异常！");
         }
         return result;
     }
@@ -52,6 +53,6 @@ public class SysUserLoginController {
      */
     @RequestMapping(value = "/unLogin")
     public ResponseModel<String> unLogin() {
-        return new ResponseModel<>("unLogin", "未登录");
+        return new ResponseModel<>(CodeType.ERROR, "未登录");
     }
 }

@@ -1,5 +1,7 @@
 package com.test.demo.common.msg;
 
+import com.test.demo.common.enums.CodeType;
+
 import java.io.Serializable;
 
 /**
@@ -12,7 +14,7 @@ public class ResponseModel<T> implements Serializable {
     /**
      * 返回状态编码
      */
-    private String code;
+    private CodeType code;
     /**
      * 返回信息
      */
@@ -23,24 +25,23 @@ public class ResponseModel<T> implements Serializable {
     private T data;
 
 
-
-    public ResponseModel(String code, String message) {
+    public ResponseModel(CodeType code, String message) {
         this.code = code;
         this.message = message;
     }
 
 
-    public ResponseModel(String code, String message, T data) {
+    public ResponseModel(CodeType code, String message, T data) {
         this.code = code;
         this.message = message;
         this.data = data;
     }
 
-    public String getCode() {
+    public CodeType getCode() {
         return code;
     }
 
-    public void setCode(String code) {
+    public void setCode(CodeType code) {
         this.code = code;
     }
 

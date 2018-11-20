@@ -32,14 +32,14 @@
         <result column="permission" property="permission"/>
         <result column="per_role_id" property="roleId"/>
     </resultMap>
-    <select id="getUserInfoByName" parameterType="String" resultMap="userInfo">
+    <select id="getUserInfoByName" parameterType="java.lang.String" resultMap="userInfo">
       SELECT t.TID,t.USER_NAME,t.USER_PASSWORD,t.USER_ADDR,t.USER_EMAIL,
               r.ROLE_ID,r.ROLE_NAME,r.USER_ID,
               p.tid as per_id,p.permission,p.role_id as per_role_id
       FROM sys_user_info t LEFT JOIN sys_user_role r ON t.TID = r.USER_ID
       left join sys_user_permission p on r.ROLE_ID = p.ROLE_ID where t.USER_NAME=#{name}
     </select>
-    <select id="getUserInfoList" parameterType="Map" resultMap="user">
+    <select id="getUserInfoList" parameterType="java.util.Map" resultMap="user">
         SELECT t.TID,t.USER_NAME,t.USER_PASSWORD,t.USER_ADDR,t.USER_EMAIL
         FROM sys_user_info t
         <where>

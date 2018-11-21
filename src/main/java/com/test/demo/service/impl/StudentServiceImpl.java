@@ -21,13 +21,12 @@ import java.sql.SQLException;
 @Service
 public class StudentServiceImpl extends ServiceImpl<StudentMapper, Student> implements IStudentService {
 
-    @Autowired
-    private StudentMapper studentMapper;
+
 
     @Override
     public Page<Student> getStudentList(Page<Student> page) {
         try {
-            page.setRecords(studentMapper.findStudentInfos(page));
+            page.setRecords(baseMapper.findStudentInfos(page));
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -38,7 +37,7 @@ public class StudentServiceImpl extends ServiceImpl<StudentMapper, Student> impl
     public Student findStudentInfo(String tid) {
         Student stu = null;
         try {
-            stu = studentMapper.findStudentInfo(new QueryWrapper<Student>().eq("tid", tid));
+            stu = baseMapper.findStudentInfo(new QueryWrapper<Student>().eq("tid", tid));
         } catch (Exception e) {
             e.printStackTrace();
         }
